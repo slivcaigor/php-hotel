@@ -10,7 +10,8 @@
     <title>PHP Hotel</title>
 
     <?php
-    $parkingYes = $_GET['parkingYes'];
+    $isParking = $_GET['isParking'];
+    $getVote = $_GET['getVote'];
     $hotels = [
 
         [
@@ -56,11 +57,16 @@
 <body>
     <form>
         <div class="form-group">
-            <label for="parkingYes">Show hotels with parking:</label>
+            <label for="isParking">Show hotels with parking:</label>
             <!--  "onchange" con valore "this.form.submit()" indica che ogni volta che l'utente cambia lo stato della casella di controllo (seleziona o deseleziona), la form deve essere inviata automaticamente -->
-            <!-- controllo condizionale "isset($parkingYes) ? 'checked' : ''"  verifica se la variabile $parkingYes esiste e se è impostata su true-->
-            <input type="checkbox" name="parkingYes" id="parkingYes" value="1" onchange="this.form.submit()"
-                <?php echo isset($parkingYes) ? 'checked' : '' ?>>
+            <!-- controllo condizionale "isset($isParking) ? 'checked' : ''"  verifica se la variabile $isParking esiste e se è impostata su true-->
+            <input type="checkbox" name="isParking" id="isParking" value="1" onchange="this.form.submit()"
+                <?php echo isset($isParking) ? 'checked' : '' ?>>
+        </div>
+        <div class="form-group">
+            <label for="getVote">Filter hotels by vote:</label>
+            <input type="number" name="getVote" id="getVote" value="<?php echo isset($getVote) ? $getVote : '' ?>">
+            <input type="submit" value="Filter">
         </div>
     </form>
     <table class="table">
@@ -77,28 +83,43 @@
         <tbody>
             <?php
             // " $counter = 1;", inizializza un contatore utilizzato per numerare le righe della tabella.
-    $counter = 1;
-    foreach ($hotels as $hotel) {
-        // esegue un controllo condizionale che verifica se l'array di input "parkingYes" è stato impostato oppure no,  Se non c'è nessun valore impostato, allora la tabella verrà generata senza alcun filtro. In caso contrario verifica se l'hotel ha parcheggio, se è vero allora mostrerà l'hotel altrimenti non lo mostrerà
-        if (!isset($parkingYes) || (isset($parkingYes) && $hotel['parking'])) {
-        ?>
+            $counter = 1;
+            foreach ($hotels as $hotel) {
+                // esegue un controllo condizionale che verifica se l'array di input "isParking" è stato impostato oppure no,  Se non c'è nessun valore impostato, allora la tabella verrà generata senza alcun filtro. In caso contrario verifica se l'hotel ha parcheggio, se è vero allora mostrerà l'hotel altrimenti non lo mostrerà
+                if (!isset($isParking) || (isset($isParking) && $hotel['parking'])) {
+                    //verifica se esiste il getVote e se il valore del vote dell'hotel è maggiore o uguale del voto richiesto
+                    if (!isset($getVote) || (isset($getVote) && $hotel['vote'] >= $getVote)) {
+                        ?>
             <tr>
-                <th scope="row"><?= $counter ?></th>
-                <td><?= $hotel['name'] ?></td>
-                <td><?= $hotel['description'] ?></td>
-                <td><?= $hotel['parking'] ? "Available" : "Not available" ?></td>
-                <td><?= $hotel['vote'] ?></td>
-                <td><?= $hotel['distance_to_center'] ?></td>
+                <th scope="row">
+                    <?= $counter ?>
+                </th>
+                <td>
+                    <?= $hotel['name'] ?>
+                </td>
+                <td>
+                    <?= $hotel['description'] ?>
+                </td>
+                <td>
+                    <?= $hotel['parking'] 
+                    ? "Available" 
+                    : "Not available" ?>
+                </td>
+                <td>
+                    <?= $hotel['vote'] ?>
+                </td>
+                <td>
+                    <?= $hotel['distance_to_center'] ?>
+                </td>
             </tr>
-            <?php 
+            <?php
             $counter++;
-        }
-    } 
-    ?>
+                    }
+                }
+            }
+            ?>
         </tbody>
     </table>
-
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
     </script>
