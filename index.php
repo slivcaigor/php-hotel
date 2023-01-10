@@ -10,7 +10,7 @@
     <title>PHP Hotel</title>
 
     <?php
-
+    $parkingYes = $_GET['parkingYes'];
     $hotels = [
 
         [
@@ -54,6 +54,15 @@
 </head>
 
 <body>
+    <form>
+        <div class="form-group">
+            <label for="parkingYes">Show hotels with parking:</label>
+            <!--  "onchange" con valore "this.form.submit()" indica che ogni volta che l'utente cambia lo stato della casella di controllo (seleziona o deseleziona), la form deve essere inviata automaticamente -->
+            <!-- controllo condizionale "isset($parkingYes) ? 'checked' : ''"  verifica se la variabile $parkingYes esiste e se è impostata su true-->
+            <input type="checkbox" name="parkingYes" id="parkingYes" value="1" onchange="this.form.submit()"
+                <?php echo isset($parkingYes) ? 'checked' : '' ?>>
+        </div>
+    </form>
     <table class="table">
         <thead>
             <tr>
@@ -67,33 +76,25 @@
         </thead>
         <tbody>
             <?php
-            $counter = 1;
-            foreach ($hotels as $hotel) {
-                ?>
+            // " $counter = 1;", inizializza un contatore utilizzato per numerare le righe della tabella.
+    $counter = 1;
+    foreach ($hotels as $hotel) {
+        // esegue un controllo condizionale che verifica se l'array di input "parkingYes" è stato impostato oppure no,  Se non c'è nessun valore impostato, allora la tabella verrà generata senza alcun filtro. In caso contrario verifica se l'hotel ha parcheggio, se è vero allora mostrerà l'hotel altrimenti non lo mostrerà
+        if (!isset($parkingYes) || (isset($parkingYes) && $hotel['parking'])) {
+        ?>
             <tr>
-                <th scope="row">
-                    <?php echo $counter; ?>
-                </th>
-                <td>
-                    <?php echo $hotel['name']; ?>
-                </td>
-                <td>
-                    <?php echo $hotel['description']; ?>
-                </td>
-                <td>
-                    <?php echo $hotel['parking'] ? "Available" : "Not available"; ?>
-                </td>
-                <td>
-                    <?php echo $hotel['vote']; ?>
-                </td>
-                <td>
-                    <?php echo $hotel['distance_to_center']; ?>
-                </td>
+                <th scope="row"><?= $counter ?></th>
+                <td><?= $hotel['name'] ?></td>
+                <td><?= $hotel['description'] ?></td>
+                <td><?= $hotel['parking'] ? "Available" : "Not available" ?></td>
+                <td><?= $hotel['vote'] ?></td>
+                <td><?= $hotel['distance_to_center'] ?></td>
             </tr>
-            <?php
-                $counter++;
-            }
-            ?>
+            <?php 
+            $counter++;
+        }
+    } 
+    ?>
         </tbody>
     </table>
 
